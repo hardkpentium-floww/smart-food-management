@@ -1,0 +1,203 @@
+schema {
+  query: Query
+  mutation: Mutation
+}
+
+union AddMealForUserResponse = MealAddSuccess | MealAddFailure
+
+union GetItemsResponse = Items | ItemsNotFound
+
+union GetMealPreferenceResponse = UserMealPreference
+
+union GetMealStatusResponse = MealStatus
+
+union GetScheduledMealByAdminResponse = AdminScheduledMeal | MealNotScheduled
+
+union GetScheduledMealForUserResponse = UserScheduledMeal | MealNotScheduled
+
+union ScheduleMealResponse = ScheduleMealSuccess | ScheduleMealFailure
+
+union UpdateIncampusStatusResponse = IncampusStatusUpdateSuccess
+
+enum BaseSizeUnitEnum {
+  KG
+  PISCES
+  LITTERS
+}
+
+enum FoodItemCategoryEnum {
+  RICE
+  PANCAKE
+  BEVERAGES
+}
+
+enum MealPreferenceEnum {
+  FULL
+  HALF
+  CUSTOM
+  SKIPPED
+}
+
+enum MealStatusEnum {
+  ATE
+  SKIPPED
+  NULL
+}
+
+enum MealTypeEnum {
+  BREAKFAST
+  LUNCH
+  DINNER
+}
+
+enum ServingSizeUnitEnum {
+  PISCES
+  LADDLE
+  GLASS
+}
+
+type AdminScheduledMeal {
+  date: String
+  mealType: MealTypeEnum
+  items: [MealItem]
+  mealId: String
+}
+
+type IncampusStatusUpdateSuccess {
+  message: String
+}
+
+type Item {
+  id: String
+  name: String
+  category: FoodItemCategoryEnum
+  baseSizeUnit: BaseSizeUnitEnum
+  servingSizeUnit: ServingSizeUnitEnum
+}
+
+type Items {
+  items: [Item]
+}
+
+type ItemsNotFound {
+  message: String
+}
+
+type MealAddFailure {
+  message: String
+}
+
+type MealAddSuccess {
+  userMealId: String
+}
+
+type MealItem {
+  id: String
+  name: String
+  fullMealQuantity: Int
+  halfMealQuantity: Int
+  customMealQuantity: Int
+}
+
+type MealNotScheduled {
+  message: String
+}
+
+type MealStatus {
+  mealStatus: MealStatusEnum
+}
+
+type ScheduleMealFailure {
+  message: String
+}
+
+type ScheduleMealSuccess {
+  mealId: String
+}
+
+type UserMeal {
+  mealType: MealTypeEnum
+  mealId: String
+  mealPreference: MealPreferenceEnum
+  items: [MealItem]
+}
+
+type UserMealPreference {
+  mealPreference: MealPreferenceEnum
+}
+
+type UserScheduledMeal {
+  date: String
+  meals: [UserMeal]
+}
+
+input AddMealForUserParams {
+  mealItems: [MealItemParams]
+  date: String
+  mealType: MealTypeEnum = null
+  mealStatus: MealStatusEnum = null
+  mealPreference: MealPreferenceEnum = null
+  mealId: String
+}
+
+input GetItemsParams {
+  offset: Int
+  limit: Int
+}
+
+input GetMealPreferenceParams {
+  userId: String
+  mealId: String
+  mealType: MealTypeEnum = null
+}
+
+input GetMealStatusParams {
+  mealId: String
+}
+
+input GetScheduledMealByAdminParams {
+  date: String
+  mealType: MealTypeEnum = null
+}
+
+input GetScheduledMealForUserParams {
+  date: String
+}
+
+input MealItemParams {
+  itemId: String
+  quantity: Int
+}
+
+input SaveMealStatusParams {
+  mealId: String
+  status: MealStatusEnum = null
+}
+
+input ScheduleMealParams {
+  itemIds: [String]
+  fullMealQuantities: [Int]
+  halfMealQuantities: [Int]
+  date: String
+  mealType: MealTypeEnum = null
+}
+
+input UpdateIncampusStatusParams {
+  userId: String
+  inCampus: Boolean
+}
+
+type Query {
+  getItems(params: GetItemsParams!): GetItemsResponse
+  getScheduledMealByAdmin(params: GetScheduledMealByAdminParams!): GetScheduledMealByAdminResponse
+  getScheduledMealForUser(params: GetScheduledMealForUserParams!): GetScheduledMealForUserResponse
+  getMealPreference(params: GetMealPreferenceParams!): GetMealPreferenceResponse
+  getMealStatus(params: GetMealStatusParams!): GetMealStatusResponse
+}
+
+type Mutation {
+  addMealForUser(params: AddMealForUserParams!): AddMealForUserResponse!
+  scheduleMeal(params: ScheduleMealParams!): ScheduleMealResponse!
+  updateIncampusStatus(params: UpdateIncampusStatusParams!): UpdateIncampusStatusResponse!
+  saveMealStatus(params: SaveMealStatusParams!): GetMealStatusResponse!
+}
