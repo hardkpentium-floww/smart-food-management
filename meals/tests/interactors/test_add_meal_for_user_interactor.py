@@ -4,7 +4,7 @@ import pytest
 
 from meals.exceptions.custom_exceptions import InvalidUser, InvalidMealType, InvalidMeal, InvalidMealStatus, \
     InvalidMealPreference, ItemNotFound, InvalidQuantity
-from meals.interactors.add_meal_for_user_interactor import AddMealForUserInteractor
+from meals.interactors.add_meal_for_user_interactor import AddUserMealInteractor
 from meals.interactors.login_interactor import LoginInteractor
 from meals.interactors.logout_interactor import LogoutInteractor
 from meals.interactors.storage_interfaces.storage_interface import StorageInterface
@@ -20,17 +20,17 @@ class TestInteractor:
 
     def test_add_meal_for_user(self, storage):
         #arrange
-        interactor = AddMealForUserInteractor(storage=storage)
+        interactor = AddUserMealInteractor(storage=storage)
         add_meal_dto = Mock()
         add_meal_dto.meal_items = []
         user_meal_id = "user_meal_id"
-        storage.validate_user.return_value = True
-        storage.validate_meal.return_value = True
+        storage.is_valid_user_id.return_value = True
+        storage.is_valid_meal_id.return_value = True
         storage.check_meal_type.return_value= True
         storage.check_meal_status.return_value= True
         storage.check_meal_preference.return_value= True
-        storage.validate_item_ids.return_value= True
-        storage.validate_quantities.return_value= True
+        storage.are_item_ids_valid.return_value= True
+        storage.are_quantities_valid.return_value= True
         storage.add_meal_for_user.return_value = user_meal_id
 
         #act
@@ -41,17 +41,17 @@ class TestInteractor:
 
     def test_add_meal_for_user_with_invalid_user(self, storage):
         # arrange
-        interactor = AddMealForUserInteractor(storage=storage)
+        interactor = AddUserMealInteractor(storage=storage)
         add_meal_dto = Mock()
         add_meal_dto.meal_items = []
         user_meal_id = "user_meal_id"
-        storage.validate_user.return_value = False
-        storage.validate_meal.return_value = True
+        storage.is_valid_user_id.return_value = False
+        storage.is_valid_meal_id.return_value = True
         storage.check_meal_type.return_value = True
         storage.check_meal_status.return_value = True
         storage.check_meal_preference.return_value = True
-        storage.validate_item_ids.return_value = True
-        storage.validate_quantities.return_value = True
+        storage.are_item_ids_valid.return_value = True
+        storage.are_quantities_valid.return_value = True
         storage.add_meal_for_user.return_value = user_meal_id
 
         # act
@@ -63,17 +63,17 @@ class TestInteractor:
 
     def test_add_meal_for_user_with_invalid_meal(self, storage):
         # arrange
-        interactor = AddMealForUserInteractor(storage=storage)
+        interactor = AddUserMealInteractor(storage=storage)
         add_meal_dto = Mock()
         add_meal_dto.meal_items = []
         user_meal_id = "user_meal_id"
-        storage.validate_user.return_value = True
-        storage.validate_meal.return_value = False
+        storage.is_valid_user_id.return_value = True
+        storage.is_valid_meal_id.return_value = False
         storage.check_meal_type.return_value = True
         storage.check_meal_status.return_value = True
         storage.check_meal_preference.return_value = True
-        storage.validate_item_ids.return_value = True
-        storage.validate_quantities.return_value = True
+        storage.are_item_ids_valid.return_value = True
+        storage.are_quantities_valid.return_value = True
         storage.add_meal_for_user.return_value = user_meal_id
 
         # act
@@ -85,17 +85,17 @@ class TestInteractor:
 
     def test_add_meal_for_user_with_invalid_meal_type(self, storage):
         # arrange
-        interactor = AddMealForUserInteractor(storage=storage)
+        interactor = AddUserMealInteractor(storage=storage)
         add_meal_dto = Mock()
         add_meal_dto.meal_items = []
         user_meal_id = "user_meal_id"
-        storage.validate_user.return_value = True
-        storage.validate_meal.return_value = True
+        storage.is_valid_user_id.return_value = True
+        storage.is_valid_meal_id.return_value = True
         storage.check_meal_type.return_value = False
         storage.check_meal_status.return_value = True
         storage.check_meal_preference.return_value = True
-        storage.validate_item_ids.return_value = True
-        storage.validate_quantities.return_value = True
+        storage.are_item_ids_valid.return_value = True
+        storage.are_quantities_valid.return_value = True
         storage.add_meal_for_user.return_value = user_meal_id
 
         # act
@@ -107,17 +107,17 @@ class TestInteractor:
 
     def test_add_meal_for_user_with_invalid_meal_status(self, storage):
         # arrange
-        interactor = AddMealForUserInteractor(storage=storage)
+        interactor = AddUserMealInteractor(storage=storage)
         add_meal_dto = Mock()
         add_meal_dto.meal_items = []
         user_meal_id = "user_meal_id"
-        storage.validate_user.return_value = True
-        storage.validate_meal.return_value = True
+        storage.is_valid_user_id.return_value = True
+        storage.is_valid_meal_id.return_value = True
         storage.check_meal_type.return_value = True
         storage.check_meal_status.return_value = False
         storage.check_meal_preference.return_value = True
-        storage.validate_item_ids.return_value = True
-        storage.validate_quantities.return_value = True
+        storage.are_item_ids_valid.return_value = True
+        storage.are_quantities_valid.return_value = True
         storage.add_meal_for_user.return_value = user_meal_id
 
         # act
@@ -129,17 +129,17 @@ class TestInteractor:
 
     def test_add_meal_for_user_with_invalid_meal_preference(self, storage):
         # arrange
-        interactor = AddMealForUserInteractor(storage=storage)
+        interactor = AddUserMealInteractor(storage=storage)
         add_meal_dto = Mock()
         add_meal_dto.meal_items = []
         user_meal_id = "user_meal_id"
-        storage.validate_user.return_value = True
-        storage.validate_meal.return_value = True
+        storage.is_valid_user_id.return_value = True
+        storage.is_valid_meal_id.return_value = True
         storage.check_meal_type.return_value = True
         storage.check_meal_status.return_value = True
         storage.check_meal_preference.return_value = False
-        storage.validate_item_ids.return_value = True
-        storage.validate_quantities.return_value = True
+        storage.are_item_ids_valid.return_value = True
+        storage.are_quantities_valid.return_value = True
         storage.add_meal_for_user.return_value = user_meal_id
 
         # act
@@ -151,17 +151,17 @@ class TestInteractor:
 
     def test_add_meal_for_user_with_invalid_item_id(self, storage):
         # arrange
-        interactor = AddMealForUserInteractor(storage=storage)
+        interactor = AddUserMealInteractor(storage=storage)
         add_meal_dto = Mock()
         add_meal_dto.meal_items = []
         user_meal_id = "user_meal_id"
-        storage.validate_user.return_value = True
-        storage.validate_meal.return_value = True
+        storage.is_valid_user_id.return_value = True
+        storage.is_valid_meal_id.return_value = True
         storage.check_meal_type.return_value = True
         storage.check_meal_status.return_value = True
         storage.check_meal_preference.return_value = True
-        storage.validate_item_ids.return_value = False
-        storage.validate_quantities.return_value = True
+        storage.are_item_ids_valid.return_value = False
+        storage.are_quantities_valid.return_value = True
         storage.add_meal_for_user.return_value = user_meal_id
 
         # act
@@ -173,17 +173,17 @@ class TestInteractor:
 
     def test_add_meal_for_user_with_invalid_item_quantity(self, storage):
         # arrange
-        interactor = AddMealForUserInteractor(storage=storage)
+        interactor = AddUserMealInteractor(storage=storage)
         add_meal_dto = Mock()
         add_meal_dto.meal_items = []
         user_meal_id = "user_meal_id"
-        storage.validate_user.return_value = True
-        storage.validate_meal.return_value = True
+        storage.is_valid_user_id.return_value = True
+        storage.is_valid_meal_id.return_value = True
         storage.check_meal_type.return_value = True
         storage.check_meal_status.return_value = True
         storage.check_meal_preference.return_value = True
-        storage.validate_item_ids.return_value = True
-        storage.validate_quantities.return_value = False
+        storage.are_item_ids_valid.return_value = True
+        storage.are_quantities_valid.return_value = False
         storage.add_meal_for_user.return_value = user_meal_id
 
         # act

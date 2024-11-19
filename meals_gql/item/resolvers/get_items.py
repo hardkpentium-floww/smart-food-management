@@ -11,7 +11,7 @@ def resolve_get_items(root, info, params):
     interactor = GetItemsInteractor(storage=storage)
     #
     try:
-        item_dtos = interactor.get_items(offset=params.offset, limit=params.limit)
+        item_dtos = interactor.get_paginated_items(offset=params.offset, limit=params.limit)
     except NoItemsFound:
         return ItemsNotFound(message="Items Not Found")
 

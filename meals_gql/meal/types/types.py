@@ -80,7 +80,7 @@ class UserMealPreference(graphene.ObjectType):
 
 class GetMealPreferenceResponse(graphene.Union):
     class Meta:
-        types = (UserMealPreference , )
+        types = (UserMealPreference , MealNotScheduled)
 
 class MealStatus(graphene.ObjectType):
     meal_status = graphene.Field(MealStatusEnum)

@@ -25,7 +25,7 @@ class TestInteractor:
         user_acc.user_id = "1"
         user_acc.user_name = "user"
 
-        storage.get_user.return_value = user
+        storage.get_user_id.return_value = user
         storage.get_user_acc.return_value = user_acc
         user_acc.check_password.return_value = True
 
@@ -56,7 +56,7 @@ class TestInteractor:
                 }
         }
 
-        storage.get_user.assert_called_once_with(username=user.name)
+        storage.get_user_id.assert_called_once_with(username=user.name)
         storage.get_user_acc.assert_called_once_with(user_id=user.id)
         user_acc.check_password.assert_called_once_with("user_password")
 
@@ -72,7 +72,7 @@ class TestInteractor:
         user_acc.user_id = 2
         user_acc.user_name = "user"
 
-        storage.get_user.return_value = None
+        storage.get_user_id.return_value = None
         storage.get_user_acc.return_value = user_acc
         user_acc.check_password.return_value = True
 
@@ -88,7 +88,7 @@ class TestInteractor:
                 }
             }
 
-        storage.get_user.assert_called_once_with(username="user.name")
+        storage.get_user_id.assert_called_once_with(username="user.name")
 
         assert login_response["status_code"] == expected_login_response["status_code"]
         assert login_response["res_status"] == expected_login_response["res_status"]
@@ -109,7 +109,7 @@ class TestInteractor:
         user_acc.user_id = "1"
         user_acc.user_name = "user"
 
-        storage.get_user.return_value = user
+        storage.get_user_id.return_value = user
         storage.get_user_acc.return_value = user_acc
         user_acc.check_password.return_value = False
 
@@ -129,7 +129,7 @@ class TestInteractor:
 
 
         #Assert
-        storage.get_user.assert_called_once_with(username="user.name")
+        storage.get_user_id.assert_called_once_with(username="user.name")
         storage.get_user_acc.assert_called_once_with(user_id=user.id)
         user_acc.check_password.assert_called_once_with("user_password")
 

@@ -24,10 +24,10 @@ class TestInteractor:
         meal_type = "meal_type"
         meal_preference = "meal_preference"
 
-        storage.get_meal_preference.return_value = "meal_preference"
+        storage.get_user_meal_preference.return_value = "meal_preference"
 
         #Act
-        meal_preference_res = interactor.get_meal_preference(user_id=user_id, meal_id=meal_id, meal_type=meal_type)
+        meal_preference_res = interactor.get_user_meal_preference(user_id=user_id, meal_id=meal_id, meal_type=meal_type)
 
         #Assert
         assert meal_preference ==  meal_preference_res

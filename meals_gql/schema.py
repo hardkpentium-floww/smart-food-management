@@ -12,7 +12,7 @@ from meals_gql.meal.mutations.add_meal_for_user import AddMealForUser
 from meals_gql.meal.mutations.save_meal_status import SaveMealStatus
 from meals_gql.meal.mutations.schedule_meal import ScheduleMeal
 from meals_gql.meal.mutations.update_scheduled_meal import UpdateScheduledMeal
-from meals_gql.meal.resolvers.get_meal_preference import resolve_get_meal_preference
+from meals_gql.meal.resolvers.get_meal_preference import resolve_get_user_meal_preference
 from meals_gql.meal.resolvers.get_meal_status import resolve_get_meal_status
 from meals_gql.meal.resolvers.get_scheduled_meal_by_admin import resolve_get_scheduled_meal_by_admin
 from meals_gql.meal.resolvers.get_scheduled_meal_for_user import resolve_get_scheduled_meal_for_user
@@ -44,7 +44,7 @@ class Query(graphene.ObjectType):
     get_meal_preference = graphene.Field(
         GetMealPreferenceResponse,
         params=GetMealPreferenceParams(required=True),
-        resolver=resolve_get_meal_preference
+        resolver=resolve_get_user_meal_preference
     )
 
     get_meal_status = graphene.Field(

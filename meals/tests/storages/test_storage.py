@@ -99,7 +99,7 @@ class TestStorageImplementation:
         limit = 14
 
         # act
-        items_dto_res = storage.get_items(offset=offset, limit=limit)
+        items_dto_res = storage.get_paginated_items(offset=offset, limit=limit)
 
         # assert
         assert len(items_dto_res) == limit
@@ -121,7 +121,7 @@ class TestStorageImplementation:
         user = UserFactory()
 
         # act
-        user_res = storage.get_user(username=user.name)
+        user_res = storage.get_user_id(username=user.name)
 
         # assert
         assert user_res.name == user.name
@@ -158,7 +158,7 @@ class TestStorageImplementation:
         items = ItemFactory.create_batch(10)
         item_ids = [item.id for item in items]
         # act
-        res = storage.validate_item_ids(item_ids=item_ids)
+        res = storage.are_item_ids_valid(item_ids=item_ids)
 
         # assert
         assert res == True
@@ -167,7 +167,7 @@ class TestStorageImplementation:
         # Arrange
         quantities = factory.List([factory.Faker("random_int", min=1, max=10000) for _ in range(10)])
         #Act
-        res = storage.validate_quantities(quantities=quantities)
+        res = storage.are_quantities_valid(quantities=quantities)
 
         # assert
         assert res == True
@@ -230,7 +230,7 @@ class TestStorageImplementation:
         user = UserFactory()
         user_meal = UserMealFactory(meal_id=meal.id, user_id=user.id)
         # act
-        meal_preference_res = storage.get_meal_preference(user_id=user.id, meal_id=meal.id, meal_type=user_meal.meal_type)
+        meal_preference_res = storage.get_user_meal_preference(user_id=user.id, meal_id=meal.id, meal_type=user_meal.meal_type)
 
         # assert
         assert meal_preference_res == user_meal.meal_preference

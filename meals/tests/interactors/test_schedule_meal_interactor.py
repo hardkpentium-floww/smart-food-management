@@ -20,8 +20,8 @@ class TestInteractor:
         interactor = ScheduleMealInteractor(storage=storage)
         schedule_meal_dto = MagicMock()
         meal_id = "meal_id"
-        storage.validate_item_ids.return_value = True
-        storage.validate_quantities.return_value = True
+        storage.are_item_ids_valid.return_value = True
+        storage.are_quantities_valid.return_value = True
         storage.validate_date.return_value = True
         storage.check_meal_type.return_value = True
         storage.schedule_meal.return_value = meal_id
@@ -37,8 +37,8 @@ class TestInteractor:
         interactor = ScheduleMealInteractor(storage=storage)
         schedule_meal_dto = MagicMock()
         meal_id = "meal_id"
-        storage.validate_item_ids.return_value = False
-        storage.validate_quantities.return_value = True
+        storage.are_item_ids_valid.return_value = False
+        storage.are_quantities_valid.return_value = True
         storage.validate_date.return_value = True
         storage.check_meal_type.return_value = True
         storage.schedule_meal.return_value = meal_id
@@ -55,8 +55,8 @@ class TestInteractor:
         interactor = ScheduleMealInteractor(storage=storage)
         schedule_meal_dto = MagicMock()
         meal_id = "meal_id"
-        storage.validate_item_ids.return_value = True
-        storage.validate_quantities.return_value = False
+        storage.are_item_ids_valid.return_value = True
+        storage.are_quantities_valid.return_value = False
         storage.validate_date.return_value = True
         storage.check_meal_type.return_value = True
         storage.schedule_meal.return_value = meal_id
@@ -73,8 +73,8 @@ class TestInteractor:
         interactor = ScheduleMealInteractor(storage=storage)
         schedule_meal_dto = MagicMock()
         meal_id = "meal_id"
-        storage.validate_item_ids.return_value = True
-        storage.validate_quantities.return_value = True
+        storage.are_item_ids_valid.return_value = True
+        storage.are_quantities_valid.return_value = True
         storage.validate_date.return_value = True
         storage.check_meal_type.return_value = False
         storage.schedule_meal.return_value = meal_id
@@ -91,8 +91,8 @@ class TestInteractor:
         interactor = ScheduleMealInteractor(storage=storage)
         schedule_meal_dto = MagicMock()
         meal_id = "meal_id"
-        storage.validate_item_ids.return_value = True
-        storage.validate_quantities.return_value = True
+        storage.are_item_ids_valid.return_value = True
+        storage.are_quantities_valid.return_value = True
         storage.validate_date.return_value = False
         storage.check_meal_type.return_value = True
         storage.schedule_meal.return_value = meal_id

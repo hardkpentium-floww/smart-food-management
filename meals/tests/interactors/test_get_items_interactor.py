@@ -25,10 +25,10 @@ class TestInteractor:
         offset = 0
         limit = 100
         items_dto = "items_dto"
-        storage.get_items.return_value = items_dto
+        storage.get_paginated_items.return_value = items_dto
 
         #act
-        items_dto_res = interactor.get_items(offset=offset, limit=limit)
+        items_dto_res = interactor.get_paginated_items(offset=offset, limit=limit)
 
         #Assert
         assert items_dto_res == items_dto
@@ -40,11 +40,11 @@ class TestInteractor:
         offset = 0
         limit = 100
         items_dto = []
-        storage.get_items.return_value = items_dto
+        storage.get_paginated_items.return_value = items_dto
 
         # act
         with pytest.raises(NoItemsFound):
-            items_dto_res = interactor.get_items(offset=offset, limit=limit)
+            items_dto_res = interactor.get_paginated_items(offset=offset, limit=limit)
 
         # Assert
         assert True

@@ -2,7 +2,7 @@ import graphene
 
 from meals.exceptions.custom_exceptions import InvalidUser, InvalidMeal, InvalidMealType, InvalidMealPreference, \
     InvalidMealStatus, ItemNotFound, InvalidQuantity
-from meals.interactors.add_meal_for_user_interactor import AddMealForUserInteractor
+from meals.interactors.add_meal_for_user_interactor import AddUserMealInteractor
 from meals.interactors.storage_interfaces.storage_interface import AddMealDTO, UserMealItemDTO
 from meals.storages.storage_implementation import StorageImplementation
 from meals_gql.user.types.types import AddMealForUserParams, AddMealForUserResponse, MealAddSuccess, MealAddFailure
@@ -17,7 +17,7 @@ class AddMealForUser(graphene.Mutation):
     @staticmethod
     def mutate(root, info, params):
         storage = StorageImplementation()
-        interactor = AddMealForUserInteractor(storage=storage)
+        interactor = AddUserMealInteractor(storage=storage)
 
         meal_items = [
             UserMealItemDTO(

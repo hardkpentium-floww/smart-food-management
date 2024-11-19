@@ -1,42 +1,33 @@
-from meals.exceptions.custom_exceptions import InvalidMealType, InvalidMealStatus, InvalidMealPreference, ItemNotFound, \
-    InvalidQuantity, InvalidUser, InvalidMeal
+from meals.exceptions.custom_exceptions import *
 from meals.interactors.storage_interfaces.storage_interface import StorageInterface, AddMealDTO
 
 
-class AddMealForUserInteractor:
+class AddUserMealInteractor:
     def __init__(self, storage: StorageInterface):
         self.storage = storage
 
-    def add_meal_for_user(self, add_meal_dto: AddMealDTO):
+    def add_meal_for_user(self, add_meal_dto: AddMealDTO) ->str:
 
-        check = self.storage.validate_user(user_id=add_meal_dto.user_id)
-        if not check:
-            raise InvalidUser
+        invalid_user_id = self.storage.is_valid_user_id(user_id=add_meal_dto.user_id)
+        if invalid_user_id:
+            raise InvalidUser(invalid_user_id)
 
-        check = self.storage.validate_meal(meal_id=add_meal_dto.meal_id)
-        if not check:
-            raise InvalidMeal
+        invalid_meal_id = self.storage.is_valid_meal_id(meal_id=add_meal_dto.meal_id)
+        if invalid_meal_id:
+            raise InvalidMeal(invalid_user_id)
 
-        check = self.storage.check_meal_type(meal_type=add_meal_dto.meal_type)
-        if not check:
-            raise InvalidMealType
+        invalid_item_ids = self.storage.are_item_ids_valid(item_ids=[item.item_id for item in add_meal_dto.meal_items])
+        if invalid_item_ids:
+            raise ItemNotFound(invalid_item_ids)
 
-        check = self.storage.check_meal_status(meal_status=add_meal_dto.meal_status)
-        if not check:
-            raise InvalidMealStatus
+        quantities = [meal_item.quantity for meal_item in add_meal_dto.meal_items]
+        invalid_quantities = self.storage.are_quantities_valid(quantities=quantities)
+        if invalid_quantities:
+            raise InvalidQuantity(invalid_quantities)
 
-        check = self.storage.check_meal_preference(meal_preference=add_meal_dto.meal_preference)
-        if not check:
-            raise InvalidMealPreference
-
-        check = self.storage.validate_item_ids(item_ids=[item.item_id for item in add_meal_dto.meal_items])
-        if check != True:
-            raise ItemNotFound(check)
-
-        check = self.storage.validate_quantities(quantities=[meal_item.quantity for meal_item in add_meal_dto.meal_items])
-        if not check:
-            raise InvalidQuantity
-
-        user_meal_id = self.storage.add_meal_for_user(add_meal_dto=add_meal_dto)
+        user_meal_id = self.storage.create_user_meal(add_meal_dto=add_meal_dto)
+        self.storage.add_custom_meal_items(user_meal_id=user_meal_id, add_meal_dto=add_meal_dto)
 
         return user_meal_id
+
+

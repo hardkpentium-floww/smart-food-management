@@ -4,8 +4,8 @@ import factory
 from ib_users.models import UserAccount
 from oauth2_provider.models import Application, AccessToken, RefreshToken
 from meals.models import UserMeal as UserMealModel, UserCustomMealItem
-from meals.constants.enums import FoodItemCategoryChoices, BaseSizeUnitChoices, ServingSizeUnitChoices, MealTypeChoices, \
-    MealPreferenceTypeChoices, AteMealStatusChoices
+from meals.constants.enums import FoodItemCategoryType, BaseSizeUnitType, ServingSizeUnitType, MealTypeChoices, \
+    MealPreferenceTypeChoices, AteMealStatusType
 from meals.models import Item, Meal, MealItem
 
 from meals.models.user import User
@@ -75,7 +75,7 @@ class UserMealFactory(factory.django.DjangoModelFactory):
     meal = factory.SubFactory(MealFactory)
     meal_type = factory.Iterator([choices[0] for choices in MealTypeChoices.get_list_of_tuples()])
     meal_preference = factory.Iterator([choices[0] for choices in MealPreferenceTypeChoices.get_list_of_tuples()])
-    meal_status = factory.Iterator([choices[0] for choices in AteMealStatusChoices.get_list_of_tuples()])
+    meal_status = factory.Iterator([choices[0] for choices in AteMealStatusType.get_list_of_tuples()])
 
 
 class ItemFactory(factory.django.DjangoModelFactory):
@@ -84,9 +84,9 @@ class ItemFactory(factory.django.DjangoModelFactory):
 
     id = factory.Faker("random_int", min=1, max=10000)
     name = factory.Faker("name")
-    category = factory.Iterator([choice[0] for choice in FoodItemCategoryChoices.get_list_of_tuples()])
-    base_size_unit = factory.Iterator([choice[0] for choice in BaseSizeUnitChoices.get_list_of_tuples()])
-    serving_size_unit = factory.Iterator([choice[0] for choice in ServingSizeUnitChoices.get_list_of_tuples()])
+    category = factory.Iterator([choice[0] for choice in FoodItemCategoryType.get_list_of_tuples()])
+    base_size_unit = factory.Iterator([choice[0] for choice in BaseSizeUnitType.get_list_of_tuples()])
+    serving_size_unit = factory.Iterator([choice[0] for choice in ServingSizeUnitType.get_list_of_tuples()])
 
 
 class MealItemFactory(factory.django.DjangoModelFactory):

@@ -1,7 +1,7 @@
 import factory
 
-from meals.constants.enums import MealTypeChoices, MealPreferenceTypeChoices, AteMealStatusChoices
-from meals.interactors.storage_interfaces.storage_interface import AccessTokenDTO, RefreshTokenDTO, ScheduleMealDTO, \
+from meals.constants.enums import MealTypeChoices, MealPreferenceTypeChoices, AteMealStatusType
+from meals.interactors.storage_interfaces.storage_interface import AccessTokenDTO, SessionTokensDTO, ScheduleMealDTO, \
     AddMealDTO, UserMealItemDTO
 from meals.tests.factories.models import MealItemFactory
 
@@ -20,7 +20,7 @@ class AccessTokenDTOFactory(factory.Factory):
 
 class RefreshTokenDTOFactory(factory.Factory):
     class Meta:
-        model = RefreshTokenDTO
+        model = SessionTokensDTO
 
     user_id = factory.Faker("uuid4")
     refresh_token = factory.Faker("uuid4")
@@ -58,4 +58,4 @@ class AddMealDTOFactory(factory.Factory):
     meal_type = factory.Iterator([choice for choice in MealTypeChoices.get_list_of_values()])
     meal_preference=factory.Iterator([choice for choice in MealPreferenceTypeChoices.get_list_of_values()])
     meal_id= factory.Faker("uuid4")
-    meal_status=factory.Iterator([choice for choice in AteMealStatusChoices.get_list_of_values()])
+    meal_status=factory.Iterator([choice for choice in AteMealStatusType.get_list_of_values()])

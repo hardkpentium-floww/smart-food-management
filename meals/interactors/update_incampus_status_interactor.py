@@ -7,9 +7,8 @@ class UpdateIncampusStatusInteractor:
         self.storage = storage
 
 
-    def update_incampus_status(self, user_id:str, incampus_status:bool):
+    def update_incampus_status(self, user_id:str, incampus_status:bool)->str:
 
         response = self.storage.update_incampus_status(user_id=user_id, incampus_status=incampus_status)
-
 
         return response
