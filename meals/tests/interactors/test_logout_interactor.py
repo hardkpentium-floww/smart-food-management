@@ -14,6 +14,10 @@ class TestInteractor:
         storage = create_autospec(StorageInterface)
         return storage
 
+    @pytest.fixture
+    def presenter(self):
+        presenter = create_autospec(LoginInteractor)
+        return presenter
 
 
     def test_logout(self, storage):

@@ -1,14 +1,9 @@
-import json
 from unittest.mock import create_autospec, patch, Mock
 import pytest
-from sqlparse.utils import offset
 
-from meals.exceptions.custom_exceptions import NoItemsFound
+from meals.exceptions.custom_exceptions import ItemNotFound
 from meals.interactors.get_items_interactor import GetItemsInteractor
-from meals.interactors.login_interactor import LoginInteractor
-from meals.interactors.logout_interactor import LogoutInteractor
 from meals.interactors.storage_interfaces.storage_interface import StorageInterface
-from meals.tests.factories.models import UserAccountFactory, UserFactory
 
 
 class TestInteractor:
@@ -39,11 +34,11 @@ class TestInteractor:
         interactor = GetItemsInteractor(storage=storage)
         offset = 0
         limit = 100
-        items_dto = []
+        items_dto = None
         storage.get_paginated_items.return_value = items_dto
 
         # act
-        with pytest.raises(NoItemsFound):
+        with pytest.raises(ItemNotFound):
             items_dto_res = interactor.get_paginated_items(offset=offset, limit=limit)
 
         # Assert

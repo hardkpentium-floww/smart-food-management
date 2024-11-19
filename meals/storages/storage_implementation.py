@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from ib_users.models import UserAccount
-
+from typing import List
 
 from meals.interactors.storage_interfaces.storage_interface import StorageInterface, AccessTokenDTO, SessionTokensDTO, \
     ItemDTO, ScheduleMealDTO, MealItemDTO, AdminScheduledMealDTO, AddMealDTO
@@ -44,7 +44,7 @@ class StorageImplementation(StorageInterface):
 
     def get_application_id(self, application_name: str)->int:
         from oauth2_provider.models import Application
-        app_id = Application.objects.get(name=application_name).values("id")
+        app_id = Application.objects.filter(name=application_name).values("id").first()
         return app_id
 
 
@@ -90,12 +90,13 @@ class StorageImplementation(StorageInterface):
 
     def get_user_id(self, username:str)->str:
         from meals.models.user import  User
-        user_id = User.objects.filter(name=username).first().values("id")
+        user_id = User.objects.filter(name=username).values("id").first()
         return user_id
 
     def create_access_token(self, access_token_dto: AccessTokenDTO)->str:
         from oauth2_provider.models import AccessToken
         access_token = AccessToken.objects.create(
+            id = access_token_dto.access_token_id,
             user_id = access_token_dto.user_id,
             token = access_token_dto.token,
             application_id = access_token_dto.application_id,
@@ -167,6 +168,7 @@ class StorageImplementation(StorageInterface):
     def create_refresh_token(self, refresh_token_dto: SessionTokensDTO)->str:
         from oauth2_provider.models import RefreshToken
         refresh_token = RefreshToken.objects.create(
+            id = refresh_token_dto.refresh_token_id,
             user_id = refresh_token_dto.user_id,
             token = refresh_token_dto.refresh_token,
             application_id = refresh_token_dto.application_id,
@@ -184,10 +186,10 @@ class StorageImplementation(StorageInterface):
 
 
 
-    def are_quantities_valid(self, quantities:[int])->List[int]:
-        quantities = list(quantities)
+    def are_quantities_valid(self, quantities:List[int])->List[int]:
+
         invalid_quantities = []
-        for i in range(len(quantities)):
+        for i in range(len(list(quantities))):
             if quantities[i] < 0:
                 invalid_quantities.append(quantities[i])
 
@@ -249,28 +251,18 @@ class StorageImplementation(StorageInterface):
         return user_meal.id
 
     def add_custom_meal_items(self,user_meal_id:str, add_meal_dto: AddMealDTO)->str:
-        from meals.models.user_meal import UserMeal
         from meals.models.user_custom_meal_item import UserCustomMealItem
 
-        # user_meal = UserMeal.objects.create(
-        #     id=str(uuid.uuid4()),
-        #     user_id=add_meal_dto.user_id,
-        #     meal_id=add_meal_dto.meal_id,
-        #     meal_type=add_meal_dto.meal_type,
-        #     meal_preference=add_meal_dto.meal_preference,
-        #     meal_status=add_meal_dto.meal_status
-        # )
+        UserCustomMealItems=[UserCustomMealItem(
+            id=str(uuid.uuid4()),
+            user_meal_id=user_meal_id,
+            item_id=meal_item.item_id,
+            meal_qty=meal_item.quantity
+        ) for meal_item in add_meal_dto.meal_items]
 
+        UserCustomMealItem.objects.bulk_create(UserCustomMealItems)
 
-        for i in range(len(add_meal_dto.meal_items)):
-            UserCustomMealItem.objects.create(
-                id=str(uuid.uuid4()),
-                user_meal_id=user_meal_id,
-                item_id=add_meal_dto.meal_items[i].item_id,
-                meal_qty=add_meal_dto.meal_items[i].quantity
-            )
-
-        return user_meal.id
+        return user_meal_id
 
     def update_incampus_status(self, user_id: str, incampus_status: bool):
         from meals.models.user import User

@@ -20,7 +20,7 @@ class TestInteractor:
         interactor = GetMealStatusInteractor(storage=storage)
         meal_id = "meal_id"
         meal_status = "meal_status"
-
+        storage.is_valid_meal_id.return_value = None
         storage.get_meal_status.return_value = "meal_status"
 
         meal_status_res = interactor.get_meal_status(meal_id=meal_id)

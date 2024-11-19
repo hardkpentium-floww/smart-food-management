@@ -2,13 +2,9 @@ import json
 from unittest.mock import create_autospec, patch, Mock
 import pytest
 
-from meals.exceptions.custom_exceptions import InvalidUser, InvalidMealType, InvalidMeal, InvalidMealStatus, \
-    InvalidMealPreference, ItemNotFound, InvalidQuantity
+from meals.exceptions.custom_exceptions import InvalidUser, InvalidMeal, ItemNotFound, InvalidQuantity
 from meals.interactors.add_meal_for_user_interactor import AddUserMealInteractor
-from meals.interactors.login_interactor import LoginInteractor
-from meals.interactors.logout_interactor import LogoutInteractor
 from meals.interactors.storage_interfaces.storage_interface import StorageInterface
-from meals.tests.factories.models import UserAccountFactory, UserFactory
 
 
 class TestInteractor:
@@ -24,14 +20,11 @@ class TestInteractor:
         add_meal_dto = Mock()
         add_meal_dto.meal_items = []
         user_meal_id = "user_meal_id"
-        storage.is_valid_user_id.return_value = True
-        storage.is_valid_meal_id.return_value = True
-        storage.check_meal_type.return_value= True
-        storage.check_meal_status.return_value= True
-        storage.check_meal_preference.return_value= True
-        storage.are_item_ids_valid.return_value= True
-        storage.are_quantities_valid.return_value= True
-        storage.add_meal_for_user.return_value = user_meal_id
+        storage.is_valid_user_id.return_value = None
+        storage.is_valid_meal_id.return_value = None
+        storage.are_item_ids_valid.return_value= None
+        storage.are_quantities_valid.return_value= None
+        storage.create_user_meal.return_value = user_meal_id
 
         #act
         meal_id_res = interactor.add_meal_for_user(add_meal_dto=add_meal_dto)
@@ -45,14 +38,11 @@ class TestInteractor:
         add_meal_dto = Mock()
         add_meal_dto.meal_items = []
         user_meal_id = "user_meal_id"
-        storage.is_valid_user_id.return_value = False
-        storage.is_valid_meal_id.return_value = True
-        storage.check_meal_type.return_value = True
-        storage.check_meal_status.return_value = True
-        storage.check_meal_preference.return_value = True
-        storage.are_item_ids_valid.return_value = True
-        storage.are_quantities_valid.return_value = True
-        storage.add_meal_for_user.return_value = user_meal_id
+        storage.is_valid_user_id.return_value = True
+        storage.is_valid_meal_id.return_value = None
+        storage.are_item_ids_valid.return_value = None
+        storage.are_quantities_valid.return_value = None
+        storage.create_user_meal.return_value = user_meal_id
 
         # act
         with pytest.raises(InvalidUser):
@@ -67,14 +57,11 @@ class TestInteractor:
         add_meal_dto = Mock()
         add_meal_dto.meal_items = []
         user_meal_id = "user_meal_id"
-        storage.is_valid_user_id.return_value = True
-        storage.is_valid_meal_id.return_value = False
-        storage.check_meal_type.return_value = True
-        storage.check_meal_status.return_value = True
-        storage.check_meal_preference.return_value = True
-        storage.are_item_ids_valid.return_value = True
-        storage.are_quantities_valid.return_value = True
-        storage.add_meal_for_user.return_value = user_meal_id
+        storage.is_valid_user_id.return_value = None
+        storage.is_valid_meal_id.return_value = True
+        storage.are_item_ids_valid.return_value = None
+        storage.are_quantities_valid.return_value = None
+        storage.create_user_meal.return_value = user_meal_id
 
         # act
         with pytest.raises(InvalidMeal):
@@ -83,71 +70,6 @@ class TestInteractor:
         # assert
         assert True
 
-    def test_add_meal_for_user_with_invalid_meal_type(self, storage):
-        # arrange
-        interactor = AddUserMealInteractor(storage=storage)
-        add_meal_dto = Mock()
-        add_meal_dto.meal_items = []
-        user_meal_id = "user_meal_id"
-        storage.is_valid_user_id.return_value = True
-        storage.is_valid_meal_id.return_value = True
-        storage.check_meal_type.return_value = False
-        storage.check_meal_status.return_value = True
-        storage.check_meal_preference.return_value = True
-        storage.are_item_ids_valid.return_value = True
-        storage.are_quantities_valid.return_value = True
-        storage.add_meal_for_user.return_value = user_meal_id
-
-        # act
-        with pytest.raises(InvalidMealType):
-            meal_id_res = interactor.add_meal_for_user(add_meal_dto=add_meal_dto)
-
-        # assert
-        assert True
-
-    def test_add_meal_for_user_with_invalid_meal_status(self, storage):
-        # arrange
-        interactor = AddUserMealInteractor(storage=storage)
-        add_meal_dto = Mock()
-        add_meal_dto.meal_items = []
-        user_meal_id = "user_meal_id"
-        storage.is_valid_user_id.return_value = True
-        storage.is_valid_meal_id.return_value = True
-        storage.check_meal_type.return_value = True
-        storage.check_meal_status.return_value = False
-        storage.check_meal_preference.return_value = True
-        storage.are_item_ids_valid.return_value = True
-        storage.are_quantities_valid.return_value = True
-        storage.add_meal_for_user.return_value = user_meal_id
-
-        # act
-        with pytest.raises(InvalidMealStatus):
-            meal_id_res = interactor.add_meal_for_user(add_meal_dto=add_meal_dto)
-
-        # assert
-        assert True
-
-    def test_add_meal_for_user_with_invalid_meal_preference(self, storage):
-        # arrange
-        interactor = AddUserMealInteractor(storage=storage)
-        add_meal_dto = Mock()
-        add_meal_dto.meal_items = []
-        user_meal_id = "user_meal_id"
-        storage.is_valid_user_id.return_value = True
-        storage.is_valid_meal_id.return_value = True
-        storage.check_meal_type.return_value = True
-        storage.check_meal_status.return_value = True
-        storage.check_meal_preference.return_value = False
-        storage.are_item_ids_valid.return_value = True
-        storage.are_quantities_valid.return_value = True
-        storage.add_meal_for_user.return_value = user_meal_id
-
-        # act
-        with pytest.raises(InvalidMealPreference):
-            meal_id_res = interactor.add_meal_for_user(add_meal_dto=add_meal_dto)
-
-        # assert
-        assert True
 
     def test_add_meal_for_user_with_invalid_item_id(self, storage):
         # arrange
@@ -155,14 +77,11 @@ class TestInteractor:
         add_meal_dto = Mock()
         add_meal_dto.meal_items = []
         user_meal_id = "user_meal_id"
-        storage.is_valid_user_id.return_value = True
-        storage.is_valid_meal_id.return_value = True
-        storage.check_meal_type.return_value = True
-        storage.check_meal_status.return_value = True
-        storage.check_meal_preference.return_value = True
-        storage.are_item_ids_valid.return_value = False
-        storage.are_quantities_valid.return_value = True
-        storage.add_meal_for_user.return_value = user_meal_id
+        storage.is_valid_user_id.return_value = None
+        storage.is_valid_meal_id.return_value = None
+        storage.are_item_ids_valid.return_value = True
+        storage.are_quantities_valid.return_value = None
+        storage.create_user_meal.return_value = user_meal_id
 
         # act
         with pytest.raises(ItemNotFound):
@@ -177,14 +96,11 @@ class TestInteractor:
         add_meal_dto = Mock()
         add_meal_dto.meal_items = []
         user_meal_id = "user_meal_id"
-        storage.is_valid_user_id.return_value = True
-        storage.is_valid_meal_id.return_value = True
-        storage.check_meal_type.return_value = True
-        storage.check_meal_status.return_value = True
-        storage.check_meal_preference.return_value = True
-        storage.are_item_ids_valid.return_value = True
-        storage.are_quantities_valid.return_value = False
-        storage.add_meal_for_user.return_value = user_meal_id
+        storage.is_valid_user_id.return_value = None
+        storage.is_valid_meal_id.return_value = None
+        storage.are_item_ids_valid.return_value = None
+        storage.are_quantities_valid.return_value = True
+        storage.create_user_meal.return_value = user_meal_id
 
         # act
         with pytest.raises(InvalidQuantity):

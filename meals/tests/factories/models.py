@@ -4,8 +4,8 @@ import factory
 from ib_users.models import UserAccount
 from oauth2_provider.models import Application, AccessToken, RefreshToken
 from meals.models import UserMeal as UserMealModel, UserCustomMealItem
-from meals.constants.enums import FoodItemCategoryType, BaseSizeUnitType, ServingSizeUnitType, MealTypeChoices, \
-    MealPreferenceTypeChoices, AteMealStatusType
+from meals.constants.enums import FoodItemCategoryType, BaseSizeUnitType, ServingSizeUnitType, MealType, \
+    MealPreferenceType, AteMealStatusType
 from meals.models import Item, Meal, MealItem
 
 from meals.models.user import User
@@ -64,7 +64,7 @@ class MealFactory(factory.django.DjangoModelFactory):
 
     id = factory.Faker("random_int", min=1, max=10000)
     date = factory.Faker("date")
-    meal_type = factory.Iterator([choices[0] for choices in MealTypeChoices.get_list_of_tuples()])
+    meal_type = factory.Iterator([choices[0] for choices in MealType.get_list_of_tuples()])
 
 class UserMealFactory(factory.django.DjangoModelFactory):
     class Meta:
@@ -73,8 +73,8 @@ class UserMealFactory(factory.django.DjangoModelFactory):
     id = factory.Faker("random_int", min=1, max=10000)
     user = factory.SubFactory(UserFactory)
     meal = factory.SubFactory(MealFactory)
-    meal_type = factory.Iterator([choices[0] for choices in MealTypeChoices.get_list_of_tuples()])
-    meal_preference = factory.Iterator([choices[0] for choices in MealPreferenceTypeChoices.get_list_of_tuples()])
+    meal_type = factory.Iterator([choices[0] for choices in MealType.get_list_of_tuples()])
+    meal_preference = factory.Iterator([choices[0] for choices in MealPreferenceType.get_list_of_tuples()])
     meal_status = factory.Iterator([choices[0] for choices in AteMealStatusType.get_list_of_tuples()])
 
 

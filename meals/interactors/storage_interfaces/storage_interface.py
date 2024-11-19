@@ -11,6 +11,7 @@ from meals_gql.meal.types.types import UserScheduledMeal
 
 @dataclass
 class AccessTokenDTO:
+    access_token_id: str
     user_id: str
     token: str
     application_id: int
@@ -19,6 +20,7 @@ class AccessTokenDTO:
 
 @dataclass
 class SessionTokensDTO:
+    refresh_token_id: int
     user_id: str
     refresh_token: str
     application_id: int
@@ -32,15 +34,12 @@ class ItemDTO:
     base_size_unit: BaseSizeUnitType
     serving_size_unit: ServingSizeUnitType
 
-@dataclass
-class MealItemDTO:
-    item_id: str
-    full_meal_quantity: int
-    half_meal_quantity: int
 
 @dataclass
 class ScheduleMealDTO:
-    items: List[MealItemDTO]
+    item_ids: List[str]
+    full_meal_quantities: List[int]
+    half_meal_quantities: List[int]
     date: datetime
     meal_type: str
 

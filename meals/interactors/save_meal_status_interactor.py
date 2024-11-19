@@ -10,9 +10,9 @@ class SaveMealStatusInteractor:
     def __init__(self, storage: StorageInterface):
         self.storage = storage
 
-    def save_meal_status(self, meal_id:str, meal_status:MealStatusEnum)->str:
+    def save_meal_status(self, meal_id:str, meal_status:str)->str:
 
-        meal_status= self.storage.save_meal_status( meal_id=meal_id, meal_status=meal_status.value)
+        meal_status= self.storage.save_meal_status( meal_id=meal_id, meal_status=meal_status)
 
         return meal_status
 

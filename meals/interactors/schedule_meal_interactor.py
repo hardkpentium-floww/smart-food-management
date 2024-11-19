@@ -1,9 +1,7 @@
 from datetime import datetime
 
-from meals.exceptions.custom_exceptions import ItemNotFound, InvalidQuantity, InvalidDate, InvalidMealType
+from meals.exceptions.custom_exceptions import ItemNotFound, InvalidQuantity, InvalidDate
 from meals.interactors.storage_interfaces.storage_interface import ScheduleMealDTO, StorageInterface
-from meals.models import MealItem
-import uuid
 
 class ScheduleMealInteractor:
     def __init__(self, storage: StorageInterface):

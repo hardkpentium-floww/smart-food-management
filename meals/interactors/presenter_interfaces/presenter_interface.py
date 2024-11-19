@@ -12,7 +12,7 @@ class PresenterInterface:
         pass
 
     @abstractmethod
-    def get_response_for_login(self,user_login_dto:UserLoginDTO):
+    def get_response_for_login(self,user_login_dto:any):
         pass
 
     @abstractmethod

@@ -23,7 +23,7 @@ class TestInteractor:
         meal_id = "meal_id"
         meal_type = "meal_type"
         meal_preference = "meal_preference"
-
+        storage.is_valid_meal_id.return_value = None
         storage.get_user_meal_preference.return_value = "meal_preference"
 
         #Act

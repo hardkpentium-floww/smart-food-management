@@ -11,6 +11,6 @@ class GetItemsInteractor:
         item_dtos = self.storage.get_paginated_items(offset=offset, limit=limit)
 
         if not item_dtos:
-            raise ItemNotFound
+            raise ItemNotFound(item_ids=[])
 
         return item_dtos
