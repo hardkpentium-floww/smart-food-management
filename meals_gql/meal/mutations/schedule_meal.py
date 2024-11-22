@@ -1,7 +1,7 @@
 import graphene
 
-
-from meals.exceptions.custom_exceptions import ItemNotFound, InvalidQuantity, InvalidDate, InvalidMealType
+from meals.exceptions.custom_exceptions import ItemNotFound, InvalidQuantity, InvalidDate, InvalidUser, \
+    MealNotScheduledException
 from meals.interactors.schedule_meal_interactor import ScheduleMealInteractor
 from meals.interactors.storage_interfaces.storage_interface import ScheduleMealDTO
 from meals.storages.storage_implementation import StorageImplementation
@@ -28,14 +28,16 @@ class ScheduleMeal(graphene.Mutation):
         )
 
         try:
-            response = interactor.schedule_meal(schedule_meal_dto=schedule_meal_dto)
+            response = interactor.schedule_meal(schedule_meal_dto=schedule_meal_dto, user_id=info.context.user_id)
         except ItemNotFound as e:
             return ScheduleMealFailure(message= f'Invalid Item ID {e.item_id}')
         except InvalidQuantity:
             return ScheduleMealFailure(message= "Invalid Quantity")
         except InvalidDate:
             return ScheduleMealFailure(message= "Invalid Date")
-        except InvalidMealType:
-            return ScheduleMealFailure(message= "Invalid Meal Type")
+        except InvalidUser:
+            return ScheduleMealFailure(message= "User Not Admin")
+        except MealNotScheduledException:
+            return ScheduleMealFailure(message= "Meal can not be Scheduled now")
 
         return ScheduleMealSuccess(meal_id=response)

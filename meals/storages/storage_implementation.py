@@ -3,6 +3,8 @@ from datetime import datetime
 from ib_users.models import UserAccount
 from typing import List
 
+from meals.constants.config import BREAKFAST_TIME, LUNCH_TIME, DINNER_TIME
+from meals.constants.enums import MealType
 from meals.interactors.storage_interfaces.storage_interface import StorageInterface, AccessTokenDTO, SessionTokensDTO, \
     ItemDTO, ScheduleMealDTO, MealItemDTO, AdminScheduledMealDTO, AddMealDTO
 import uuid
@@ -29,15 +31,27 @@ class StorageImplementation(StorageInterface):
         user_acc = UserAccount.objects.get(user_id=user_id)
         return user_acc.check_password(password)
 
+    def get_meal_user_id(self, meal_id:str) -> str:
+        user_meal = UserMeal.objects.filter(meal_id=meal_id).values("user_id").first()
+        return user_meal["user_id"]
+
     def is_valid_user_id(self, user_id: str)->bool|str:
         from meals.models.user import User
         check = User.objects.filter(id=user_id).exists()
         if not check:
             return user_id
 
+
     def is_valid_meal_id(self, meal_id: str)->bool|str:
         from meals.models.meal import Meal
         check = Meal.objects.filter(id=meal_id)
+
+        if not check:
+            return meal_id
+
+    def is_valid_meal_id_with_date(self, meal_id: str, date: datetime.date) -> bool | str:
+        from meals.models.meal import Meal
+        check = Meal.objects.filter(id=meal_id, date=date)
 
         if not check:
             return meal_id
@@ -47,6 +61,33 @@ class StorageImplementation(StorageInterface):
         app_id = Application.objects.filter(name=application_name).values("id").first()
         return app_id
 
+    def is_meal_scheduling_valid(self, date:datetime, meal_type:str)->bool:
+        if meal_type == MealType.get_list_of_values()[0]:
+            if date > datetime.now():
+                return True
+            elif date.date() == datetime.now().date():
+                if str(date.time()) < BREAKFAST_TIME:
+                    return True
+
+            return False
+
+        elif meal_type == MealType.get_list_of_values()[1]:
+            if date > datetime.now():
+                return True
+            elif date.date() == datetime.now().date():
+                if str(date.time()) < LUNCH_TIME:
+                    return True
+
+            return False
+
+        elif meal_type == MealType.get_list_of_values()[2]:
+            if date > datetime.now():
+                return True
+            elif date.date() == datetime.now().date():
+                if str(date.time()) < DINNER_TIME:
+                    return True
+
+            return False
 
     def expire_access_token(self, access_token_id: str)->None:
         from oauth2_provider.models import AccessToken
@@ -73,6 +114,10 @@ class StorageImplementation(StorageInterface):
 
         return item_dtos
 
+    def get_admin_status(self, user_id:str)->bool:
+        from meals.models import User
+        status = User.objects.get(user_id=user_id).values("is_admin")
+        return status["is_admin"]
 
 
     def revoke_refresh_token(self, refresh_token_id: str)->None:
@@ -116,9 +161,13 @@ class StorageImplementation(StorageInterface):
 
         return meal.id
 
-    def get_meal_id_by_date_and_meal_type(self,date:datetime.date,meal_type:str):
+    def get_meal_id_by_date_and_meal_type(self,date:datetime.date, meal_type:str)->tuple[bool,str]:
         from meals.models import Meal
         meal_id = Meal.objects.filter(date__date=date,meal_type=meal_type).values("id").first()
+
+        if not meal_id:
+            return False
+
         return meal_id
 
 
@@ -237,6 +286,11 @@ class StorageImplementation(StorageInterface):
         meal = UserMeal.objects.filter(user_id=user_id,meal_id=meal_id, meal_type=meal_type).first()
 
         return meal.meal_preference
+
+    def is_user_meal_valid(self, meal_id: str, user_id: str, meal_type: str) -> str:
+        is_valid = UserMeal.objects.filter(user_id=user_id, meal_id=meal_id, meal_type=meal_type).exists()
+        return is_valid
+
 
     def create_user_meal(self, add_meal_dto: AddMealDTO)->str:
         user_meal = UserMeal.objects.create(

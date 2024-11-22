@@ -15,16 +15,26 @@ class AccessTokenDTO:
     user_id: str
     token: str
     application_id: int
-    expires: datetime
+    expires: int
     scope: str
 
 @dataclass
 class SessionTokensDTO:
-    refresh_token_id: int
+    refresh_token_id: str
     user_id: str
     refresh_token: str
     application_id: int
     access_token_id: str
+
+@dataclass
+class UserLoginDTO:
+    user_id: str
+    is_admin: bool
+    access_token_str:str
+    expires:int
+    refresh_token_str:str
+    token_type:str
+    scope:str
 
 @dataclass
 class ItemDTO:
@@ -84,6 +94,10 @@ class StorageInterface:
         pass
 
     @abstractmethod
+    def get_meal_user_id(self, meal_id:str) -> str:
+        pass
+
+    @abstractmethod
     def is_password_valid(self, user_id:str, password:str)->bool:
         pass
 
@@ -96,7 +110,15 @@ class StorageInterface:
         pass
 
     @abstractmethod
+    def is_valid_meal_id_with_date(self, meal_id: str, date: datetime.date) -> bool | str:
+        pass
+
+    @abstractmethod
     def get_application_id(self, application_name: str)->int:
+        pass
+
+    @abstractmethod
+    def is_meal_scheduling_valid(self, date:datetime, meal_type:str)->bool:
         pass
 
     @abstractmethod
@@ -109,6 +131,10 @@ class StorageInterface:
 
     @abstractmethod
     def get_paginated_items(self, offset:int, limit:int)->List[ItemDTO]:
+        pass
+
+    @abstractmethod
+    def get_admin_status(self, user_id:str)->bool:
         pass
 
     @abstractmethod
@@ -130,7 +156,7 @@ class StorageInterface:
 
 
     @abstractmethod
-    def get_meal_id_by_date_and_meal_type(self,date:datetime.date,meal_type:str):
+    def get_meal_id_by_date_and_meal_type(self,date:datetime.date, meal_type:str)->tuple[bool,str]:
         pass
 
     @abstractmethod
@@ -167,6 +193,10 @@ class StorageInterface:
 
     @abstractmethod
     def get_user_meal_preference(self, meal_id:str, user_id:str, meal_type:str)->str:
+        pass
+
+    @abstractmethod
+    def is_user_meal_valid(self, meal_id: str, user_id: str, meal_type: str) -> str:
         pass
 
     @abstractmethod

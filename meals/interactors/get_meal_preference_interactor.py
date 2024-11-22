@@ -14,6 +14,10 @@ class GetMealPreferenceInteractor:
         if invalid_meal_id:
             raise InvalidMeal(invalid_meal_id)
 
+        is_valid_user_meal = self.storage.is_user_meal_valid(user_id=user_id, meal_type=meal_type, meal_id=meal_id)
+        if not is_valid_user_meal:
+            raise InvalidMeal(is_valid_user_meal)
+
         meal_preference= self.storage.get_user_meal_preference(user_id=user_id, meal_id=meal_id, meal_type=meal_type)
 
         return meal_preference

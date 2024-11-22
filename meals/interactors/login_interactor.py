@@ -1,7 +1,7 @@
 from django.http import JsonResponse
 
 from meals.interactors.presenter_interfaces.presenter_interface import PresenterInterface
-from meals.interactors.storage_interfaces.storage_interface import StorageInterface
+from meals.interactors.storage_interfaces.storage_interface import StorageInterface, UserLoginDTO
 import uuid
 
 class LoginInteractor:
@@ -10,7 +10,6 @@ class LoginInteractor:
         self.storage = storage
 
     def login(self, username: str, password: str, presenter: PresenterInterface):
-        from datetime import datetime, timedelta
         from meals.interactors.storage_interfaces.storage_interface import AccessTokenDTO, SessionTokensDTO
 
         user_id = self.storage.get_user_id(username=username)
@@ -27,11 +26,12 @@ class LoginInteractor:
 
         access_token_str = str(uuid.uuid4())
         refresh_token_str = str(uuid.uuid4())
-        expires = datetime.now() + timedelta(days=1)
+        expires = 3600
         application_id = self.storage.get_application_id(application_name="meals")
         is_admin = self.storage.check_admin(user_id=user_id)
 
         access_token_dto = AccessTokenDTO(
+            access_token_id=str(uuid.uuid4()),
             user_id=user_id,
             token=access_token_str,
             application_id=application_id,
@@ -42,6 +42,7 @@ class LoginInteractor:
         access_token_id = self.storage.create_access_token(access_token_dto=access_token_dto)
 
         refresh_token_dto = SessionTokensDTO(
+            refresh_token_id=str(uuid.uuid4()),
             user_id=user_id,
             refresh_token=refresh_token_str,
             access_token_id=access_token_id,

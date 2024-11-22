@@ -10,7 +10,5 @@ def resolve_get_meal_status(root, info, params):
     interactor = GetMealStatusInteractor(storage=storage)
 
     meal_status = interactor.get_meal_status(meal_id=params.meal_id)
-
-
     return MealStatus(meal_status=meal_status)
 

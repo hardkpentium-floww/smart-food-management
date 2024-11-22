@@ -1,7 +1,7 @@
 import graphene
 
-from meals.exceptions.custom_exceptions import InvalidUser, InvalidMeal, InvalidMealType, InvalidMealPreference, \
-    InvalidMealStatus, ItemNotFound, InvalidQuantity
+from meals.exceptions.custom_exceptions import InvalidUser, InvalidMeal, \
+    ItemNotFound, InvalidQuantity, MealNotScheduledException
 from meals.interactors.add_meal_for_user_interactor import AddUserMealInteractor
 from meals.interactors.storage_interfaces.storage_interface import AddMealDTO, UserMealItemDTO
 from meals.storages.storage_implementation import StorageImplementation
@@ -37,21 +37,17 @@ class AddMealForUser(graphene.Mutation):
         )
 
         try:
-            user_meal_id = interactor.add_meal_for_user(add_meal_dto=add_meal_dto)
+            user_meal_id = interactor.add_meal_for_user(add_meal_dto=add_meal_dto, user_id=info.context.user_id)
         except InvalidUser:
             return MealAddFailure(message= "Invalid User")
         except InvalidMeal:
             return MealAddFailure(message= "Invalid Meal ID")
-        except InvalidMealType:
-            return MealAddFailure(message= "Invalid Meal Type")
-        except InvalidMealPreference:
-            return MealAddFailure(message= "Invalid Meal Preference")
-        except InvalidMealStatus:
-            return MealAddFailure(message= "Invalid Meal Status")
         except ItemNotFound as e:
             return MealAddFailure(message= f"Invalid Item ID: {e.item_id}")
         except InvalidQuantity:
             return MealAddFailure(message= "Invalid Quantity")
+        except MealNotScheduledException:
+            return MealAddFailure(message= "Meal can not be Scheduled now")
 
 
         return MealAddSuccess(user_meal_id = user_meal_id)

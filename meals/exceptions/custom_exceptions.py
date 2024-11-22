@@ -28,14 +28,3 @@ class InvalidUser(Exception):
 class InvalidMeal(Exception):
     def __init__(self, meal_id: str):
         self.meal_id = meal_id
-
-
-#
-# class InvalidMealType(Exception):
-#     pass
-#
-# class InvalidMealStatus(Exception):
-#     pass
-#
-# class InvalidMealPreference(Exception):
-#     pass

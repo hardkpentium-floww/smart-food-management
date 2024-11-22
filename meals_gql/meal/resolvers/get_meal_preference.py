@@ -10,7 +10,7 @@ def resolve_get_user_meal_preference(self, info, params):
     interactor = GetMealPreferenceInteractor(storage=storage)
 
     try:
-        meal_preference = interactor.get_user_meal_preference(user_id=params.user_id, meal_id=params.meal_id, meal_type=params.meal_type)
+        meal_preference = interactor.get_user_meal_preference(user_id=info.context.user_id, meal_id=params.meal_id, meal_type=params.meal_type)
     except InvalidMeal as e:
         return MealNotScheduled(message=f'Invalid Meal ID {e.meal_id}')
 

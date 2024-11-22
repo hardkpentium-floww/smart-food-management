@@ -9,7 +9,7 @@ class GetScheduledMealForUserInteractor:
     def __init__(self, storage: StorageInterface):
         self.storage = storage
 
-    def get_scheduled_meal_for_user(self,date:datetime.date, user_id:str)->any:
+    def get_scheduled_meal_for_user(self,date:datetime.date, user_id:str)->UserScheduledMeal:
 
         response = self.storage.get_scheduled_meal_for_user(date=date, user_id=user_id)
 

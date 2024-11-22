@@ -1,6 +1,4 @@
-from sqlparse.utils import offset
-
-from meals.exceptions.custom_exceptions import NoItemsFound
+from meals.exceptions.custom_exceptions import ItemNotFound
 from meals.interactors.get_items_interactor import GetItemsInteractor
 from meals.storages.storage_implementation import StorageImplementation
 from meals_gql.item.types.types import Items, Item,ItemsNotFound
@@ -9,10 +7,10 @@ from meals_gql.item.types.types import Items, Item,ItemsNotFound
 def resolve_get_items(root, info, params):
     storage = StorageImplementation()
     interactor = GetItemsInteractor(storage=storage)
-    #
+
     try:
         item_dtos = interactor.get_paginated_items(offset=params.offset, limit=params.limit)
-    except NoItemsFound:
+    except ItemNotFound:
         return ItemsNotFound(message="Items Not Found")
 
     return Items(items=[Item(

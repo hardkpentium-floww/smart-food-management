@@ -6,17 +6,26 @@ class AddUserMealInteractor:
     def __init__(self, storage: StorageInterface):
         self.storage = storage
 
-    def add_meal_for_user(self, add_meal_dto: AddMealDTO) ->str:
+    def add_meal_for_user(self, add_meal_dto: AddMealDTO, user_id:str) ->str:
 
         invalid_user_id = self.storage.is_valid_user_id(user_id=add_meal_dto.user_id)
         if invalid_user_id:
             raise InvalidUser(invalid_user_id)
 
-        invalid_meal_id = self.storage.is_valid_meal_id(meal_id=add_meal_dto.meal_id)
-        if invalid_meal_id:
-            raise InvalidMeal(invalid_user_id)
+        invalid_user_id = user_id==add_meal_dto.user_id
+        if invalid_user_id:
+            raise InvalidUser(user_id)
 
-        invalid_item_ids = self.storage.are_item_ids_valid(item_ids=[item.item_id for item in add_meal_dto.meal_items])
+        meal_scheduling_valid = self.storage.is_meal_scheduling_valid(meal_type=add_meal_dto.meal_type.value, date=add_meal_dto.date)
+        if not meal_scheduling_valid:
+            raise MealNotScheduledException(add_meal_dto.date)
+
+        invalid_meal_id = self.storage.is_valid_meal_id_with_date(meal_id=add_meal_dto.meal_id, date=add_meal_dto.date.date)
+        if invalid_meal_id:
+            raise InvalidMeal(invalid_meal_id)
+
+        item_ids = [item.item_id for item in add_meal_dto.meal_items]
+        invalid_item_ids = self.storage.are_item_ids_valid(item_ids=item_ids)
         if invalid_item_ids:
             raise ItemNotFound(invalid_item_ids)
 
